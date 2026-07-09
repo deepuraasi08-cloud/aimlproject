@@ -1,0 +1,391 @@
+{% extends "base.html" %}
+
+{% block title %}Prediction Results - Smart Lender{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            
+            {% if data.prediction == "Approved" %}
+                <!-- Approved Result Card -->
+                <div class="card-glass result-card approved" id="approvedCard" style="max-width: 100%;">
+                    <div class="result-icon-wrapper">
+                        <i class="bi bi-shield-fill-check"></i>
+                    </div>
+                    <h1 class="result-title">Loan Approved</h1>
+                    <p class="result-desc mb-4">
+                        Congratulations! Based on the applicant's financial information and credit profile, the loan is likely to be approved.
+                    </p>
+                    
+                    <!-- Confidence Indicator -->
+                    <div class="confidence-container mb-4">
+                        <div class="confidence-label text-muted mb-2">Automated Underwriting Match</div>
+                        <div class="confidence-bar-outer" style="margin: 0 auto;">
+                            <div class="confidence-bar-inner" id="confidenceBar" style="width: 0%;"></div>
+                        </div>
+                        <div class="confidence-number mt-2"><span class="counter-anim" data-target="{{ data.confidence }}">{{ data.confidence }}%</span></div>
+                    </div>
+                    
+                    <!-- Three-Way Visualization Grid -->
+                    <div class="row g-3 mb-4 justify-content-center">
+                        <!-- Chart 1: Decision Probability -->
+                        <div class="col-md-4">
+                            <div class="p-3 border rounded-3 text-center bg-white shadow-sm" style="border-color: var(--border-color) !important;">
+                                <h5 class="fw-bold mb-3 text-muted" style="font-size: 0.76rem; letter-spacing: 0.5px; text-transform: uppercase;">
+                                    <i class="bi bi-pie-chart-fill text-success"></i> Decision Ratio
+                                </h5>
+                                <div style="position: relative; height: 110px; width: 100%;">
+                                    <canvas id="donutChartApproved"></canvas>
+                                    <div style="position: absolute; top: 48%; left: 50%; transform: translate(-50%, -50%); font-size: 1rem; font-weight: 700; color: var(--primary);">
+                                        {{ data.confidence }}%
+                                    </div>
+                                </div>
+                                <div class="text-muted mt-2" style="font-size: 0.72rem;">Approval Probability</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Chart 2: Credit Score Rating -->
+                        <div class="col-md-4">
+                            <div class="p-3 border rounded-3 text-center bg-white shadow-sm" style="border-color: var(--border-color) !important;">
+                                <h5 class="fw-bold mb-3 text-muted" style="font-size: 0.76rem; letter-spacing: 0.5px; text-transform: uppercase;">
+                                    <i class="bi bi-speedometer2 text-success"></i> Credit Score
+                                </h5>
+                                <div style="position: relative; height: 110px; width: 100%;">
+                                    <canvas id="creditChartApproved"></canvas>
+                                    <div style="position: absolute; top: 48%; left: 50%; transform: translate(-50%, -50%); font-size: 1rem; font-weight: 700; color: var(--primary);">
+                                        {{ data.applicant.credit_score }}
+                                    </div>
+                                </div>
+                                <div class="text-muted mt-2" style="font-size: 0.72rem;">Target score: 750+</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Chart 3: DTI Risk Ratio -->
+                        <div class="col-md-4">
+                            <div class="p-3 border rounded-3 text-center bg-white shadow-sm" style="border-color: var(--border-color) !important;">
+                                <h5 class="fw-bold mb-3 text-muted" style="font-size: 0.76rem; letter-spacing: 0.5px; text-transform: uppercase;">
+                                    <i class="bi bi-activity text-success"></i> Debt-to-Income (DTI)
+                                </h5>
+                                <div style="position: relative; height: 110px; width: 100%;">
+                                    <canvas id="dtiChartApproved"></canvas>
+                                    <div style="position: absolute; top: 48%; left: 50%; transform: translate(-50%, -50%); font-size: 1rem; font-weight: 700; color: var(--primary);">
+                                        {{ data.applicant.dti_ratio }}%
+                                    </div>
+                                </div>
+                                <div class="text-muted mt-2" style="font-size: 0.72rem;">Risk Limit: Under 40%</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Approval Analysis Reasons -->
+                    <div class="mb-4 text-start p-3 rounded-3" style="background-color: rgba(16, 185, 129, 0.04); border: 1px dashed rgba(16, 185, 129, 0.25);">
+                        <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--success); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <i class="bi bi-patch-check-fill"></i> Key Approval Strengths:
+                        </h4>
+                        <ul class="mb-0 ps-3" style="color: var(--success); font-size: 0.85rem; font-weight: 500; line-height: 1.5;">
+                            {% for reason in data.approval_reasons %}
+                                <li class="mb-2">{{ reason }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    
+                    <!-- Details Table -->
+                    <h3 style="font-weight: 700; color: var(--primary); font-size: 1.1rem; text-align: left; margin-bottom: 15px;">
+                        <i class="bi bi-file-earmark-text me-1 text-primary"></i> Application Summary
+                    </h3>
+                    <table class="applicant-summary-table shadow-sm rounded-3">
+                        <tbody>
+                            <tr>
+                                <th>Gender / Married</th>
+                                <td>{{ data.applicant.gender }} / {{ data.applicant.married }}</td>
+                                <th>Dependents</th>
+                                <td>{{ data.applicant.dependents }}</td>
+                            </tr>
+                            <tr>
+                                <th>Education</th>
+                                <td>{{ data.applicant.education }}</td>
+                                <th>Employment</th>
+                                <td>{{ data.applicant.self_employed }}</td>
+                            </tr>
+                            <tr>
+                                <th>Applicant Income</th>
+                                <td>₹{{ "{:,.2f}".format(data.applicant.applicantincome) }}</td>
+                                <th>Co-Applicant Income</th>
+                                <td>₹{{ "{:,.2f}".format(data.applicant.coapplicantincome) }}</td>
+                            </tr>
+                            <tr>
+                                <th>Requested Amount</th>
+                                <td>₹{{ "{:,.0f}".format(data.applicant.loanamount * 1000) }}</td>
+                                <th>Loan Term</th>
+                                <td>{{ "{:,.0f}".format(data.applicant.loan_amount_term) }} Months</td>
+                            </tr>
+                            <tr>
+                                <th>Credit Score</th>
+                                <td>{{ data.applicant.credit_score }} <span class="badge {% if data.applicant.credit_score >= 750 %}bg-success-subtle text-success{% else %}bg-danger-subtle text-danger{% endif %}">{{ data.applicant.credit_history }}</span></td>
+                                <th>Existing EMIs</th>
+                                <td>₹{{ "{:,.2f}".format(data.applicant.existing_emis) }}</td>
+                            </tr>
+                            <tr>
+                                <th>Debt-to-Income (DTI)</th>
+                                <td colspan="3">
+                                    <span class="badge {% if data.applicant.dti_ratio <= 40.0 %}bg-success-subtle text-success{% else %}bg-danger-subtle text-danger{% endif %}">
+                                        {{ data.applicant.dti_ratio }}%
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <!-- Actions -->
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="{{ url_for('predict') }}" class="btn-grad px-4 py-2" id="btnPredictAnother">
+                            <i class="bi bi-plus-lg"></i> Predict Another Loan
+                        </a>
+                        <a href="{{ url_for('index') }}" class="btn-outline-custom px-4 py-2" id="btnReturnHome">
+                            <i class="bi bi-house-door-fill"></i> Return Home
+                        </a>
+                    </div>
+                </div>
+            {% else %}
+                <!-- Rejected Result Card -->
+                <div class="card-glass result-card rejected" id="rejectedCard" style="max-width: 100%;">
+                    <div class="result-icon-wrapper">
+                        <i class="bi bi-shield-fill-x"></i>
+                    </div>
+                    <h1 class="result-title">Loan Rejected</h1>
+                    <p class="result-desc mb-4">
+                        The application requires further review or additional verification.
+                    </p>
+                    
+                    <!-- Confidence Indicator -->
+                    <div class="confidence-container mb-4">
+                        <div class="confidence-label text-muted mb-2">Automated Underwriting Match</div>
+                        <div class="confidence-bar-outer" style="margin: 0 auto;">
+                            <div class="confidence-bar-inner" id="confidenceBar" style="width: 0%;"></div>
+                        </div>
+                        <div class="confidence-number mt-2"><span class="counter-anim" data-target="{{ data.confidence }}">{{ data.confidence }}%</span></div>
+                    </div>
+                    
+                    <!-- Three-Way Visualization Grid -->
+                    <div class="row g-3 mb-4 justify-content-center">
+                        <!-- Chart 1: Decision Probability -->
+                        <div class="col-md-4">
+                            <div class="p-3 border rounded-3 text-center bg-white shadow-sm" style="border-color: var(--border-color) !important;">
+                                <h5 class="fw-bold mb-3 text-muted" style="font-size: 0.76rem; letter-spacing: 0.5px; text-transform: uppercase;">
+                                    <i class="bi bi-pie-chart-fill text-danger"></i> Decision Ratio
+                                </h5>
+                                <div style="position: relative; height: 110px; width: 100%;">
+                                    <canvas id="donutChartRejected"></canvas>
+                                    <div style="position: absolute; top: 48%; left: 50%; transform: translate(-50%, -50%); font-size: 1rem; font-weight: 700; color: var(--primary);">
+                                        {{ data.confidence }}%
+                                    </div>
+                                </div>
+                                <div class="text-muted mt-2" style="font-size: 0.72rem;">Rejection Probability</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Chart 2: Credit Score Rating -->
+                        <div class="col-md-4">
+                            <div class="p-3 border rounded-3 text-center bg-white shadow-sm" style="border-color: var(--border-color) !important;">
+                                <h5 class="fw-bold mb-3 text-muted" style="font-size: 0.76rem; letter-spacing: 0.5px; text-transform: uppercase;">
+                                    <i class="bi bi-speedometer2 text-danger"></i> Credit Score
+                                </h5>
+                                <div style="position: relative; height: 110px; width: 100%;">
+                                    <canvas id="creditChartRejected"></canvas>
+                                    <div style="position: absolute; top: 48%; left: 50%; transform: translate(-50%, -50%); font-size: 1rem; font-weight: 700; color: var(--primary);">
+                                        {{ data.applicant.credit_score }}
+                                    </div>
+                                </div>
+                                <div class="text-muted mt-2" style="font-size: 0.72rem;">Target score: 750+</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Chart 3: DTI Risk Ratio -->
+                        <div class="col-md-4">
+                            <div class="p-3 border rounded-3 text-center bg-white shadow-sm" style="border-color: var(--border-color) !important;">
+                                <h5 class="fw-bold mb-3 text-muted" style="font-size: 0.76rem; letter-spacing: 0.5px; text-transform: uppercase;">
+                                    <i class="bi bi-activity text-danger"></i> Debt-to-Income (DTI)
+                                </h5>
+                                <div style="position: relative; height: 110px; width: 100%;">
+                                    <canvas id="dtiChartRejected"></canvas>
+                                    <div style="position: absolute; top: 48%; left: 50%; transform: translate(-50%, -50%); font-size: 1rem; font-weight: 700; color: var(--primary);">
+                                        {{ data.applicant.dti_ratio }}%
+                                    </div>
+                                </div>
+                                <div class="text-muted mt-2" style="font-size: 0.72rem;">Risk Limit: Under 40%</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Rejection Analysis Reasons -->
+                    <div class="mb-4 text-start p-3 rounded-3" style="background-color: rgba(244, 63, 94, 0.04); border: 1px dashed rgba(244, 63, 94, 0.25);">
+                        <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--danger); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <i class="bi bi-exclamation-triangle-fill"></i> Primary Rejection Factors:
+                        </h4>
+                        <ul class="mb-0 ps-3" style="color: var(--danger); font-size: 0.85rem; font-weight: 500; line-height: 1.5;">
+                            {% for reason in data.rejection_reasons %}
+                                <li class="mb-2">{{ reason }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    
+                    <!-- Details Table -->
+                    <h3 style="font-weight: 700; color: var(--primary); font-size: 1.1rem; text-align: left; margin-bottom: 15px;">
+                        <i class="bi bi-file-earmark-text me-1 text-primary"></i> Application Summary
+                    </h3>
+                    <table class="applicant-summary-table shadow-sm rounded-3">
+                        <tbody>
+                            <tr>
+                                <th>Gender / Married</th>
+                                <td>{{ data.applicant.gender }} / {{ data.applicant.married }}</td>
+                                <th>Dependents</th>
+                                <td>{{ data.applicant.dependents }}</td>
+                            </tr>
+                            <tr>
+                                <th>Education</th>
+                                <td>{{ data.applicant.education }}</td>
+                                <th>Employment</th>
+                                <td>{{ data.applicant.self_employed }}</td>
+                            </tr>
+                            <tr>
+                                <th>Applicant Income</th>
+                                <td>₹{{ "{:,.2f}".format(data.applicant.applicantincome) }}</td>
+                                <th>Co-Applicant Income</th>
+                                <td>₹{{ "{:,.2f}".format(data.applicant.coapplicantincome) }}</td>
+                            </tr>
+                            <tr>
+                                <th>Requested Amount</th>
+                                <td>₹{{ "{:,.0f}".format(data.applicant.loanamount * 1000) }}</td>
+                                <th>Loan Term</th>
+                                <td>{{ "{:,.0f}".format(data.applicant.loan_amount_term) }} Months</td>
+                            </tr>
+                            <tr>
+                                <th>Credit Score</th>
+                                <td>{{ data.applicant.credit_score }} <span class="badge {% if data.applicant.credit_score >= 750 %}bg-success-subtle text-success{% else %}bg-danger-subtle text-danger{% endif %}">{{ data.applicant.credit_history }}</span></td>
+                                <th>Existing EMIs</th>
+                                <td>₹{{ "{:,.2f}".format(data.applicant.existing_emis) }}</td>
+                            </tr>
+                            <tr>
+                                <th>Debt-to-Income (DTI)</th>
+                                <td colspan="3">
+                                    <span class="badge {% if data.applicant.dti_ratio <= 40.0 %}bg-success-subtle text-success{% else %}bg-danger-subtle text-danger{% endif %}">
+                                        {{ data.applicant.dti_ratio }}%
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <!-- Actions -->
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="{{ url_for('predict') }}" class="btn-grad px-4 py-2" style="background: linear-gradient(135deg, #475569 0%, #0F172A 100%);" id="btnTryAgain">
+                            <i class="bi bi-arrow-clockwise"></i> Try Again
+                        </a>
+                        <a href="{{ url_for('index') }}" class="btn-outline-custom px-4 py-2" id="btnReturnHome">
+                            <i class="bi bi-house-door-fill"></i> Home
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+            
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Include Chart.js CDN for beautiful interactive charts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Animate the confidence meter bar fill after page loads
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            const bar = document.getElementById('confidenceBar');
+            if (bar) {
+                bar.style.width = "{{ data.confidence }}%";
+            }
+        }, 100);
+
+        const prediction = "{{ data.prediction }}";
+        const confidence = parseFloat("{{ data.confidence }}");
+        const remaining = parseFloat((100 - confidence).toFixed(1));
+        const creditScore = parseInt("{{ data.applicant.credit_score }}");
+        const dtiRatio = parseFloat("{{ data.applicant.dti_ratio }}");
+
+        // Determine correct canvas IDs depending on Approved/Rejected state
+        const suffix = prediction === 'Approved' ? 'Approved' : 'Rejected';
+        
+        // 1. Donut Chart (Decision Ratio)
+        const ctxDonut = document.getElementById('donutChart' + suffix).getContext('2d');
+        let donutLabels = prediction === 'Approved' ? ['Approved Probability', 'Rejection Risk'] : ['Rejection Risk', 'Approved Probability'];
+        let donutColors = prediction === 'Approved' ? ['#10B981', '#E2E8F0'] : ['#F43F5E', '#E2E8F0'];
+
+        new Chart(ctxDonut, {
+            type: 'doughnut',
+            data: {
+                labels: donutLabels,
+                datasets: [{
+                    data: [confidence, remaining],
+                    backgroundColor: donutColors,
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '74%',
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        // 2. Credit Score Chart (Gauge style relative to max 850)
+        const ctxCredit = document.getElementById('creditChart' + suffix).getContext('2d');
+        // Bound score between 300 and 850
+        const displayScore = Math.max(300, Math.min(850, creditScore));
+        const creditRemaining = 850 - displayScore;
+        const creditColor = creditScore >= 750 ? '#10B981' : '#F43F5E';
+
+        new Chart(ctxCredit, {
+            type: 'doughnut',
+            data: {
+                labels: ['Credit Score', 'Remaining'],
+                datasets: [{
+                    data: [displayScore - 300, creditRemaining], // Range 300-850
+                    backgroundColor: [creditColor, '#E2E8F0'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '74%',
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        // 3. DTI Chart
+        const ctxDti = document.getElementById('dtiChart' + suffix).getContext('2d');
+        const dtiColor = dtiRatio <= 40.0 ? '#10B981' : '#F43F5E';
+        const dtiRemaining = Math.max(0, 100 - dtiRatio);
+
+        new Chart(ctxDti, {
+            type: 'doughnut',
+            data: {
+                labels: ['DTI Ratio', 'Safe Allowance'],
+                datasets: [{
+                    data: [dtiRatio, dtiRemaining],
+                    backgroundColor: [dtiColor, '#E2E8F0'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '74%',
+                plugins: { legend: { display: false } }
+            }
+        });
+    });
+</script>
+{% endblock %}

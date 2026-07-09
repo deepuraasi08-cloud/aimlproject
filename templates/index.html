@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+
+{% block title %}Smart Lender - AI-Powered Loan Approval Prediction System{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6 animate-on-scroll">
+                <div class="hero-subtitle">
+                    <i class="bi bi-cpu-fill me-2"></i>AI-Powered Loan Approval Prediction
+                </div>
+                <h1 class="hero-title" id="heroTitle">
+                    Smart Lender
+                </h1>
+                <p class="hero-desc" id="heroDesc">
+                    Predict loan eligibility instantly using Machine Learning. Our intelligent system analyzes applicant information to assist banks and financial institutions in making accurate lending decisions.
+                </p>
+                
+                {% if session.get('prediction_result') %}
+                <div class="p-3 mb-4 rounded-3 d-flex align-items-center justify-content-between" style="background: rgba(30, 27, 75, 0.04); border: 1px solid rgba(30, 27, 75, 0.15);">
+                    <div>
+                        <span class="text-muted" style="font-size: 0.8rem; display: block; font-weight: 500;">LATEST EVALUATION RESULT</span>
+                        <strong class="text-primary" style="font-size: 1rem; display: flex; align-items: center; gap: 6px;">
+                            {% if session.get('prediction_result') == 'Approved' %}
+                            <i class="bi bi-check-circle-fill text-success" style="font-size: 1.15rem;"></i> Loan Predicted: APPROVED ({{ session.get('confidence') }}%)
+                            {% else %}
+                            <i class="bi bi-x-circle-fill text-danger" style="font-size: 1.15rem;"></i> Loan Predicted: REJECTED ({{ session.get('confidence') }}%)
+                            {% endif %}
+                        </strong>
+                    </div>
+                    <a href="{{ url_for('result') }}" class="btn-grad py-2 px-3" style="font-size: 0.8rem; border-radius: 20px; box-shadow: none;">
+                        <i class="bi bi-file-earmark-text"></i> View Report
+                    </a>
+                </div>
+                {% endif %}
+                
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{{ url_for('predict') }}" class="btn-grad" id="btnPredictLoan">
+                        <i class="bi bi-wallet2"></i> Predict Loan
+                    </a>
+                    <a href="{{ url_for('about') }}" class="btn-outline-custom" id="btnLearnMore">
+                        Learn More <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-lg-6 position-relative text-center animate-on-scroll" style="animation-delay: 0.2s;">
+                <!-- Decorative Premium Vector illustration styled with Pure CSS and Glassmorphism -->
+                <div class="position-relative d-inline-block" style="width: 100%; max-width: 500px; height: 380px;">
+                    <!-- Base background grid card -->
+                    <div style="position: absolute; top: 30px; left: 10%; width: 80%; height: 80%; background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(30, 58, 138, 0.05) 100%); border-radius: 24px; border: 1px solid rgba(30, 58, 138, 0.1); transform: rotate(-3deg);"></div>
+                    
+                    <!-- Glassmorphic Dashboard Card -->
+                    <div class="card-glass" style="position: absolute; top: 0; left: 5%; width: 90%; height: 90%; text-align: left; display: flex; flex-direction: column; justify-content: space-between; z-index: 5;">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <span style="font-weight: 700; color: var(--primary); font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+                                <i class="bi bi-shield-check-fill text-primary"></i> Credit Risk Analysis
+                            </span>
+                            <span class="badge bg-success-subtle text-success border border-success-subtle" style="font-size: 0.8rem; padding: 6px 12px; border-radius: 20px;">
+                                <i class="bi bi-circle-fill me-1" style="font-size: 0.5rem; vertical-align: middle;"></i> Active Model
+                            </span>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="text-muted" style="font-size: 0.8rem; margin-bottom: 5px;">Approval Probability</div>
+                            <div style="font-size: 2.5rem; font-weight: 800; color: var(--primary); line-height: 1; display: flex; align-items: baseline; gap: 5px;">
+                                94.7<span style="font-size: 1.5rem; font-weight: 600;">%</span>
+                            </div>
+                            <div class="progress mt-2" style="height: 6px; background-color: #E2E8F0;">
+                                <div class="progress-bar bg-primary" role="progressbar" style="width: 94.7%" aria-valuenow="94.7" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="row g-2 text-center" style="font-size: 0.8rem;">
+                            <div class="col-4">
+                                <div class="p-2" style="background-color: rgba(30, 58, 138, 0.03); border-radius: 8px;">
+                                    <div class="text-muted">Decision Tree</div>
+                                    <strong style="color: var(--primary);">81.8%</strong>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="p-2" style="background-color: rgba(30, 58, 138, 0.03); border-radius: 8px;">
+                                    <div class="text-muted">Random Forest</div>
+                                    <strong style="color: var(--primary);">83.1%</strong>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="p-2" style="background-color: var(--primary-light); border-radius: 8px; color: var(--white);">
+                                    <div>XGBoost</div>
+                                    <strong>81.1%</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Secondary Floating Credit Card -->
+                    <div class="card-glass shadow-lg" style="position: absolute; bottom: -20px; right: -10px; width: 220px; height: 130px; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: var(--white); border: none; border-radius: 16px; padding: 18px; text-align: left; z-index: 10; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <i class="bi bi-bank" style="font-size: 1.25rem;"></i>
+                            <span style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8;">Premium Partner</span>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.95rem; font-weight: 500; letter-spacing: 2px;">**** **** 7740</div>
+                            <div style="font-size: 0.65rem; opacity: 0.7; margin-top: 5px;">CREDIT LIMIT: $150,000</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Floating Data Dot elements -->
+                    <div style="position: absolute; top: -10px; left: -10px; width: 45px; height: 45px; border-radius: 50%; background: var(--success-light); color: var(--success); display: flex; align-items: center; justify-content: center; z-index: 6; box-shadow: var(--shadow-soft);">
+                        <i class="bi bi-check-lg" style="font-size: 1.5rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5 animate-on-scroll">
+            <h2 style="font-weight: 800; color: var(--primary);" id="featuresTitle">Core Platform Features</h2>
+            <p class="text-muted" style="max-width: 500px; margin: 0 auto;">Designed to offer premium, responsive, and secure assessments for commercial bank lenders.</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6 animate-on-scroll" style="animation-delay: 0.1s;">
+                <div class="card-glass feature-card" id="featureCardFast">
+                    <div class="feature-icon-wrapper">
+                        <i class="bi bi-lightning-charge-fill"></i>
+                    </div>
+                    <h3 class="feature-title">Fast Prediction</h3>
+                    <p class="feature-desc">Instant AI-powered loan eligibility assessment in milliseconds.</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6 animate-on-scroll" style="animation-delay: 0.2s;">
+                <div class="card-glass feature-card" id="featureCardSecure">
+                    <div class="feature-icon-wrapper">
+                        <i class="bi bi-shield-lock-fill"></i>
+                    </div>
+                    <h3 class="feature-title">Secure</h3>
+                    <p class="feature-desc">Safe, encrypted, and highly confidential processing of applicant details.</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6 animate-on-scroll" style="animation-delay: 0.3s;">
+                <div class="card-glass feature-card" id="featureCardAccurate">
+                    <div class="feature-icon-wrapper">
+                        <i class="bi bi-check-all"></i>
+                    </div>
+                    <h3 class="feature-title">High Accuracy</h3>
+                    <p class="feature-desc">Optimized machine learning algorithms featuring 81.1% testing accuracy.</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6 animate-on-scroll" style="animation-delay: 0.4s;">
+                <div class="card-glass feature-card" id="featureCardCloud">
+                    <div class="feature-icon-wrapper">
+                        <i class="bi bi-cloud-arrow-up-fill"></i>
+                    </div>
+                    <h3 class="feature-title">Cloud Ready</h3>
+                    <p class="feature-desc">Architected for scalable deployments on modern infrastructures like IBM Cloud.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Workflow Section -->
+<section class="workflow-section">
+    <div class="container">
+        <div class="text-center mb-5 animate-on-scroll">
+            <h2 style="font-weight: 800; color: var(--primary);" id="workflowTitle">System Workflow</h2>
+            <p class="text-muted" style="max-width: 500px; margin: 0 auto;">Our prediction pipeline executes automated steps from submission to real-time status retrieval.</p>
+        </div>
+        
+        <div class="position-relative animate-on-scroll">
+            <div class="timeline-connector"></div>
+            <div class="timeline-container">
+                <div class="timeline-step" id="step1">
+                    <div class="timeline-icon">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <h4 class="timeline-step-title">Applicant</h4>
+                    <p class="text-muted" style="font-size: 0.85rem; max-width: 150px; margin: 5px auto 0 auto;">Submits credit profile information.</p>
+                </div>
+                
+                <div class="timeline-step" id="step2">
+                    <div class="timeline-icon">
+                        <i class="bi bi-input-cursor-text"></i>
+                    </div>
+                    <h4 class="timeline-step-title">Enter Details</h4>
+                    <p class="text-muted" style="font-size: 0.85rem; max-width: 150px; margin: 5px auto 0 auto;">Validates demographic and financial fields.</p>
+                </div>
+                
+                <div class="timeline-step" id="step3">
+                    <div class="timeline-icon">
+                        <i class="bi bi-cpu"></i>
+                    </div>
+                    <h4 class="timeline-step-title">ML Model</h4>
+                    <p class="text-muted" style="font-size: 0.85rem; max-width: 150px; margin: 5px auto 0 auto;">XGBoost processes mathematical vectors.</p>
+                </div>
+                
+                <div class="timeline-step" id="step4">
+                    <div class="timeline-icon">
+                        <i class="bi bi-gear-wide-connected"></i>
+                    </div>
+                    <h4 class="timeline-step-title">Prediction</h4>
+                    <p class="text-muted" style="font-size: 0.85rem; max-width: 150px; margin: 5px auto 0 auto;">Evaluates approval risks and probability.</p>
+                </div>
+                
+                <div class="timeline-step" id="step5">
+                    <div class="timeline-icon">
+                        <i class="bi bi-file-earmark-check-fill"></i>
+                    </div>
+                    <h4 class="timeline-step-title">Loan Decision</h4>
+                    <p class="text-muted" style="font-size: 0.85rem; max-width: 150px; margin: 5px auto 0 auto;">Generates dynamic outcome sheet instantly.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

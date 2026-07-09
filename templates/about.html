@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block title %}About Platform - Smart Lender{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    
+    <!-- Hero Block -->
+    <div class="about-hero text-center mb-5 animate-on-scroll">
+        <div class="container">
+            <span class="badge badge-primary-custom mb-3" style="font-size: 0.85rem; padding: 6px 16px; border-radius: 20px;">
+                Platform Overview
+            </span>
+            <h1 style="font-weight: 800; color: var(--primary);">Smart Lender</h1>
+            <h2 class="h5 text-muted mb-4">AI-Powered Loan Approval Prediction System</h2>
+            <p class="text-muted mx-auto" style="max-width: 700px; font-size: 1.05rem;">
+                A banking-grade software solution using machine learning to predict the creditworthiness of loan applicants. The platform runs classification models on historical records to assist credit officers and analysts with rapid, data-informed approvals.
+            </p>
+        </div>
+    </div>
+    
+    <div class="row g-4 mb-5">
+        <!-- Mission & Objective -->
+        <div class="col-12 animate-on-scroll">
+            <div class="card-glass">
+                <h3 style="font-weight: 700; color: var(--primary);"><i class="bi bi-rocket-takeoff text-primary me-2"></i> Our Mission</h3>
+                <p class="text-muted">
+                    To eliminate the friction of loan application evaluation, reduce credit assessment times from days to milliseconds, and build risk mitigation systems that empower banking networks to lower default rates and secure loan assets.
+                </p>
+                <h4 class="mt-4" style="font-weight: 700; color: var(--primary); font-size: 1.1rem;"><i class="bi bi-bullseye text-primary me-2"></i> Platform Objectives</h4>
+                <ul class="text-muted ps-3">
+                    <li class="mb-2">Automate credit qualification using mathematical classifiers.</li>
+                    <li class="mb-2">Ensure data integrity through feature-level constraints.</li>
+                    <li class="mb-2">Maximize predictability using state-of-the-art XGBoost algorithms.</li>
+                    <li class="mb-2">Build cloud-scalable banking tools suitable for enterprise deployment.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+
+    
+    <!-- User Guide: How to Process & Check Loans -->
+    <div class="row g-4 mb-5">
+        <div class="col-12 animate-on-scroll">
+            <div class="card-glass">
+                <h3 class="mb-4" style="font-weight: 700; color: var(--primary);"><i class="bi bi-journal-bookmark-fill text-primary me-2"></i> Application & Assessment Guide</h3>
+                <div class="row g-4">
+                    <!-- Column 1: Details Required -->
+                    <div class="col-md-4">
+                        <div class="p-3 border rounded-3 h-100 bg-white shadow-sm" style="border-color: var(--border-color) !important;">
+                            <div class="d-flex align-items-center gap-2 mb-3">
+                                <div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-weight: 700; font-size: 0.9rem;">1</div>
+                                <h4 class="h6 mb-0 fw-bold text-primary">Required Loan Details</h4>
+                            </div>
+                            <p class="text-muted" style="font-size: 0.8rem; line-height: 1.5;">
+                                To run the predictive assessment, the following applicant parameters must be supplied:
+                            </p>
+                            <ul class="text-muted ps-3 mb-0" style="font-size: 0.8rem; line-height: 1.5;">
+                                <li class="mb-1"><strong>Demographics:</strong> Gender, Marital Status, and number of Dependents.</li>
+                                <li class="mb-1"><strong>Socio-Economics:</strong> Education level and self-employment status.</li>
+                                <li class="mb-1"><strong>Financials:</strong> Applicant & co-applicant income (in ₹), plus existing monthly debts (EMIs).</li>
+                                <li class="mb-1"><strong>Loan Specs:</strong> Requested loan amount (in thousands ₹), term duration, and property area type.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Column 2: How to Process -->
+                    <div class="col-md-4">
+                        <div class="p-3 border rounded-3 h-100 bg-white shadow-sm" style="border-color: var(--border-color) !important;">
+                            <div class="d-flex align-items-center gap-2 mb-3">
+                                <div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-weight: 700; font-size: 0.9rem;">2</div>
+                                <h4 class="h6 mb-0 fw-bold text-primary">How to Process the Loan</h4>
+                            </div>
+                            <p class="text-muted" style="font-size: 0.8rem; line-height: 1.5;">
+                                Follow these operational steps to execute a credit assessment on the platform:
+                            </p>
+                            <ol class="text-muted ps-3 mb-0" style="font-size: 0.8rem; line-height: 1.5;">
+                                <li class="mb-1">Navigate to the <strong>Predict Loan</strong> portal in the navigation bar.</li>
+                                <li class="mb-1">Fill out all mandatory personal and financial inputs with verified data.</li>
+                                <li class="mb-1">Input the applicant's numeric <strong>Credit Score</strong> (300-850) and current active <strong>EMIs</strong>.</li>
+                                <li class="mb-1">Review the Credit Assessment Guidelines terms and check the consent box.</li>
+                                <li class="mb-1">Click <strong>Predict Loan</strong> to transmit features to the classification engine.</li>
+                            </ol>
+                        </div>
+                    </div>
+                    
+                    <!-- Column 3: How to Check Approval -->
+                    <div class="col-md-4">
+                        <div class="p-3 border rounded-3 h-100 bg-white shadow-sm" style="border-color: var(--border-color) !important;">
+                            <div class="d-flex align-items-center gap-2 mb-3">
+                                <div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-weight: 700; font-size: 0.9rem;">3</div>
+                                <h4 class="h6 mb-0 fw-bold text-primary">Checking Approval Status</h4>
+                            </div>
+                            <p class="text-muted" style="font-size: 0.8rem; line-height: 1.5;">
+                                The decision engine generates an interactive risk report comprising three distinct parameters:
+                            </p>
+                            <ul class="text-muted ps-3 mb-0" style="font-size: 0.8rem; line-height: 1.5;">
+                                <li class="mb-1"><strong>Decision Ratio:</strong> Shows the ML model's confidence probability of approval/rejection.</li>
+                                <li class="mb-1"><strong>Credit Score:</strong> Evaluates if the score satisfies the 750 underwriting score guidelines.</li>
+                                <li class="mb-1"><strong>Debt Ratio (DTI):</strong> Checks if combined monthly debts stay within the 40% safety threshold.</li>
+                                <li class="mb-1"><strong>Qualitative Factors:</strong> Lists primary approval strengths or red rejection factors detailing the decision trigger.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Development Workflow Diagram -->
+    <div class="row animate-on-scroll">
+        <div class="col-12 text-center">
+            <h3 style="font-weight: 700; color: var(--primary);" class="mb-4">Development Pipeline Diagram</h3>
+            
+            <div class="card-glass p-4">
+                <div class="row align-items-center justify-content-center g-3 text-center">
+                    <div class="col-md-2">
+                        <div class="p-3 border rounded-3 bg-white shadow-sm">
+                            <i class="bi bi-people-fill text-primary" style="font-size: 1.5rem;"></i>
+                            <h5 style="font-size: 0.9rem; margin-top: 8px; font-weight: 600;">Applicant</h5>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-1 d-none d-md-block">
+                        <i class="bi bi-arrow-right-short text-muted" style="font-size: 2rem;"></i>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <div class="p-3 border rounded-3 bg-white shadow-sm">
+                            <i class="bi bi-input-cursor text-primary" style="font-size: 1.5rem;"></i>
+                            <h5 style="font-size: 0.9rem; margin-top: 8px; font-weight: 600;">Preprocessing</h5>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-1 d-none d-md-block">
+                        <i class="bi bi-arrow-right-short text-muted" style="font-size: 2rem;"></i>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <div class="p-3 border rounded-3 bg-white shadow-sm">
+                            <i class="bi bi-cpu-fill text-primary" style="font-size: 1.5rem;"></i>
+                            <h5 style="font-size: 0.9rem; margin-top: 8px; font-weight: 600;">Machine Learning</h5>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-1 d-none d-md-block">
+                        <i class="bi bi-arrow-right-short text-muted" style="font-size: 2rem;"></i>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <div class="p-3 border rounded-3 bg-white shadow-sm">
+                            <i class="bi bi-file-earmark-check text-primary" style="font-size: 1.5rem;"></i>
+                            <h5 style="font-size: 0.9rem; margin-top: 8px; font-weight: 600;">Prediction</h5>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-1 d-none d-md-block">
+                        <i class="bi bi-arrow-right-short text-muted" style="font-size: 2rem;"></i>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <div class="p-3 border rounded-3 bg-white shadow-sm" style="background-color: var(--success-light); border-color: var(--success);">
+                            <i class="bi bi-shield-check text-success" style="font-size: 1.5rem;"></i>
+                            <h5 style="font-size: 0.9rem; margin-top: 8px; font-weight: 600; color: var(--success);">Decision</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- About page does not require active charts -->
+{% endblock %}

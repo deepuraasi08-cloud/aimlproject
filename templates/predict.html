@@ -1,0 +1,257 @@
+{% extends "base.html" %}
+
+{% block title %}Loan Application Assessment - Smart Lender{% endblock %}
+
+{% block content %}
+<div class="container predict-container">
+    <!-- Header Text -->
+    <div class="text-center mb-5 animate-on-scroll">
+        <span class="badge badge-primary-custom mb-3" style="font-size: 0.85rem; padding: 6px 16px; border-radius: 20px;">
+            Credit Assessment Portal
+        </span>
+        <h1 style="font-weight: 800; color: var(--primary);">Loan Prediction Form</h1>
+        <p class="text-muted">Enter the applicant's demographic and financial profiles below to calculate creditworthiness.</p>
+    </div>
+    
+    <div class="row g-4">
+        <!-- Left Column: Form (Width: 8) -->
+        <div class="col-lg-8">
+            <!-- Loan Predict Form -->
+            <form id="loanPredictForm" class="animate-on-scroll" style="animation-delay: 0.1s;">
+                <div class="row g-4">
+                    
+                    <!-- Left Column: Personal Information -->
+                    <div class="col-md-6">
+                        <div class="card-glass h-100">
+                            <h2 class="section-form-title">
+                                <i class="bi bi-person-bounding-box text-primary"></i> Personal Information
+                            </h2>
+                            
+                            <!-- Gender -->
+                            <div class="form-group-custom">
+                                <label class="form-label-custom" for="gender">Gender <span class="text-danger">*</span></label>
+                                <select class="form-control-custom" id="gender" name="gender" required>
+                                    <option value="" disabled selected>Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
+                                <div class="invalid-feedback">Gender is required.</div>
+                            </div>
+                            
+                            <!-- Married -->
+                            <div class="form-group-custom">
+                                <label class="form-label-custom" for="married">Marital Status <span class="text-danger">*</span></label>
+                                <select class="form-control-custom" id="married" name="married" required>
+                                    <option value="" disabled selected>Select Marital Status</option>
+                                    <option value="yes">Married</option>
+                                    <option value="no">Single / Unmarried</option>
+                                </select>
+                                <div class="invalid-feedback">Marital status is required.</div>
+                            </div>
+                            
+                            <!-- Dependents -->
+                            <div class="form-group-custom">
+                                <label class="form-label-custom" for="dependents">Number of Dependents <span class="text-danger">*</span></label>
+                                <select class="form-control-custom" id="dependents" name="dependents" required>
+                                    <option value="" disabled selected>Select Dependents</option>
+                                    <option value="0">0 Dependents</option>
+                                    <option value="1">1 Dependent</option>
+                                    <option value="2">2 Dependents</option>
+                                    <option value="3+">3+ Dependents</option>
+                                </select>
+                                <div class="invalid-feedback">Please select number of dependents.</div>
+                            </div>
+                            
+                            <!-- Education -->
+                            <div class="form-group-custom">
+                                <label class="form-label-custom" for="education">Education Level <span class="text-danger">*</span></label>
+                                <select class="form-control-custom" id="education" name="education" required>
+                                    <option value="" disabled selected>Select Education</option>
+                                    <option value="graduate">Graduate</option>
+                                    <option value="not graduate">Undergraduate / Not Graduate</option>
+                                </select>
+                                <div class="invalid-feedback">Education level is required.</div>
+                            </div>
+                            
+                            <!-- Self Employed -->
+                            <div class="form-group-custom">
+                                <label class="form-label-custom" for="self_employed">Employment Type <span class="text-danger">*</span></label>
+                                <select class="form-control-custom" id="self_employed" name="self_employed" required>
+                                    <option value="" disabled selected>Select Employment Type</option>
+                                    <option value="no">Salaried / Employed</option>
+                                    <option value="yes">Self-Employed / Freelancer</option>
+                                </select>
+                                <div class="invalid-feedback">Employment type is required.</div>
+                            </div>
+                            
+                            <!-- Property Area -->
+                            <div class="form-group-custom">
+                                <label class="form-label-custom" for="property_area">Property Location Area <span class="text-danger">*</span></label>
+                                <select class="form-control-custom" id="property_area" name="property_area" required>
+                                    <option value="" disabled selected>Select Property Area</option>
+                                    <option value="urban">Urban Area</option>
+                                    <option value="semiurban">Semi-Urban Area</option>
+                                    <option value="rural">Rural Area</option>
+                                </select>
+                                <div class="invalid-feedback">Property location area is required.</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column: Financial Information -->
+                    <div class="col-md-6">
+                        <div class="card-glass h-100">
+                            <h2 class="section-form-title">
+                                <i class="bi bi-cash-coin text-primary"></i> Financial Profile
+                            </h2>
+                            
+                            <!-- Applicant Income -->
+                            <div class="form-group-custom">
+                                <label class="form-label-custom" for="applicantincome">Applicant's Monthly Income (₹) <span class="text-danger">*</span></label>
+                                <input type="number" min="0" class="form-control-custom" id="applicantincome" name="applicantincome" placeholder="e.g. 35000" required>
+                                <div class="invalid-feedback">Please enter a valid monthly income.</div>
+                            </div>
+                            
+                            <!-- Coapplicant Income -->
+                            <div class="form-group-custom">
+                                <label class="form-label-custom" for="coapplicantincome">Co-Applicant's Monthly Income (₹) <span class="text-danger">*</span></label>
+                                <input type="number" min="0" class="form-control-custom" id="coapplicantincome" name="coapplicantincome" placeholder="e.g. 15000 (Enter 0 if none)" required>
+                                <div class="invalid-feedback">Please enter a valid co-applicant income (0 or above).</div>
+                            </div>
+                            
+                            <!-- Loan Amount -->
+                            <div class="form-group-custom">
+                                <label class="form-label-custom" for="loanamount">Requested Loan Amount (in Thousands, ₹) <span class="text-danger">*</span></label>
+                                <input type="number" min="1" class="form-control-custom" id="loanamount" name="loanamount" placeholder="e.g. 150 for ₹1,50,000" required>
+                                <div class="invalid-feedback">Please enter a valid loan amount (above 0).</div>
+                            </div>
+                            
+                            <!-- Loan Amount Term -->
+                            <div class="form-group-custom">
+                                <label class="form-label-custom" for="loan_amount_term">Loan Term Duration (in Months) <span class="text-danger">*</span></label>
+                                <input type="number" min="1" class="form-control-custom" id="loan_amount_term" name="loan_amount_term" placeholder="e.g. 360 for 30 years" required>
+                                <div class="invalid-feedback">Please enter a valid duration term.</div>
+                            </div>
+                            
+                            <!-- Credit Score -->
+                            <div class="form-group-custom">
+                                <label class="form-label-custom" for="credit_score">Credit Score <span class="text-danger">*</span></label>
+                                <input type="number" min="300" max="850" class="form-control-custom" id="credit_score" name="credit_score" placeholder="e.g. 780 (Range: 300 - 850)" required>
+                                <div class="form-text mt-1 text-muted" style="font-size: 0.72rem; line-height: 1.3;">
+                                    A score of 750 or higher demonstrates strong creditworthiness and helps you secure lower interest rates.
+                                </div>
+                                <div class="invalid-feedback">Please enter a valid credit score between 300 and 850.</div>
+                            </div>
+                            
+                            <!-- Existing Monthly Debts / EMIs -->
+                            <div class="form-group-custom">
+                                <label class="form-label-custom" for="existing_emis">Existing Monthly Debts / EMIs (₹) <span class="text-danger">*</span></label>
+                                <input type="number" min="0" class="form-control-custom" id="existing_emis" name="existing_emis" placeholder="e.g. 5000 (Enter 0 if none)" required>
+                                <div class="form-text mt-1 text-muted" style="font-size: 0.72rem; line-height: 1.3;">
+                                    Lenders check how much of your current income is already going toward paying off other debts.
+                                </div>
+                                <div class="invalid-feedback">Please enter a valid amount (0 or above).</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Assessment Guidelines and Consent Checkbox -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card-glass p-4" style="background-color: rgba(30, 27, 75, 0.03);">
+                            <h3 style="font-weight: 700; color: var(--primary); font-size: 1.15rem; margin-bottom: 15px;">
+                                <i class="bi bi-file-earmark-ruled-fill text-primary"></i> Credit Assessment Guidelines
+                            </h3>
+                            <div class="text-muted" style="font-size: 0.85rem; max-height: 130px; overflow-y: auto; padding-right: 10px; margin-bottom: 20px; border-bottom: 1px solid rgba(148, 163, 184, 0.15); line-height: 1.5;">
+                                <p class="mb-2"><strong>1. Accuracy of Declaration:</strong> The applicant certifies that all demographic, employment, and financial details entered on this application are true, accurate, and complete to the best of their knowledge.</p>
+                                <p class="mb-2"><strong>2. Automated Evaluation:</strong> By submitting this assessment form, you authorize the automated system to process your credit eligibility classification vector using our optimized machine learning algorithms.</p>
+                                <p class="mb-2"><strong>3. Security and Privacy:</strong> All applicant details are evaluated dynamically for real-time credit scoring. We do not sell or store personal demographic profiles generated during this simulation.</p>
+                                <p class="mb-2"><strong>4. Non-Binding Outcomes:</strong> Scores and outputs predicted by the platform are for credit evaluation advisory support only and do not constitute a legal offer or loan contract.</p>
+                            </div>
+                            
+                            <div class="form-check d-flex align-items-start gap-2">
+                                <input class="form-check-input mt-1" type="checkbox" value="" id="guidelinesConsent" required style="cursor: pointer; border-color: var(--secondary);">
+                                <label class="form-check-label" for="guidelinesConsent" style="font-size: 0.9rem; font-weight: 500; color: var(--text-dark); cursor: pointer; user-select: none;">
+                                    I have read and agree to the Credit Assessment Guidelines and consent to automated profile evaluation. <span class="text-danger">*</span>
+                                </label>
+                                <div class="invalid-feedback" style="margin-top: 5px;">You must agree to the guidelines before submitting.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reset and Predict Buttons -->
+                <div class="row mt-4">
+                    <div class="col-12 text-center">
+                        <div class="d-flex justify-content-center gap-3">
+                            <button type="reset" class="btn btn-secondary px-5 py-3 rounded-pill border-0 shadow-sm" style="background-color: var(--text-muted); font-weight: 600;">
+                                <i class="bi bi-arrow-counterclockwise"></i> Reset
+                            </button>
+                            <button type="submit" class="btn-grad px-5 py-3 rounded-pill" id="btnSubmitPredict">
+                                <i class="bi bi-cpu-fill"></i> Predict Loan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Right Column: Sidebar (Width: 4) -->
+        <div class="col-lg-4 animate-on-scroll" style="animation-delay: 0.2s;">
+            <div class="card-glass h-100 d-flex flex-column gap-4" style="background-color: var(--white); box-shadow: var(--shadow-soft);">
+                <h3 style="font-weight: 700; color: var(--primary); font-size: 1.2rem; border-left: 4px solid var(--secondary); padding-left: 12px; margin-bottom: 5px;">
+                    <i class="bi bi-shield-shaded text-primary"></i> Lending Pillars
+                </h3>
+                
+                <div class="p-3 rounded-3 bg-light border-start border-primary border-4 shadow-sm" style="background-color: rgba(30, 27, 75, 0.03) !important;">
+                    <div class="fw-bold text-primary mb-1" style="font-size: 0.95rem; display: flex; align-items: center; gap: 6px;">
+                        <i class="bi bi-speedometer2 text-primary"></i> Credit Score (750+)
+                    </div>
+                    <p class="text-muted mb-0" style="font-size: 0.8rem; line-height: 1.5;">
+                        A score of 750 or higher demonstrates strong creditworthiness and helps you secure lower interest rates.
+                    </p>
+                </div>
+                
+                <div class="p-3 rounded-3 bg-light border-start border-primary border-4 shadow-sm" style="background-color: rgba(30, 27, 75, 0.03) !important;">
+                    <div class="fw-bold text-primary mb-1" style="font-size: 0.95rem; display: flex; align-items: center; gap: 6px;">
+                        <i class="bi bi-wallet-fill text-primary"></i> Stable Income
+                    </div>
+                    <p class="text-muted mb-0" style="font-size: 0.8rem; line-height: 1.5;">
+                        You must prove you have a consistent monthly income to comfortably afford the Equated Monthly Installments (EMIs).
+                    </p>
+                </div>
+                
+                <div class="p-3 rounded-3 bg-light border-start border-primary border-4 shadow-sm" style="background-color: rgba(30, 27, 75, 0.03) !important;">
+                    <div class="fw-bold text-primary mb-1" style="font-size: 0.95rem; display: flex; align-items: center; gap: 6px;">
+                        <i class="bi bi-percent text-primary"></i> Debt-to-Income Ratio
+                    </div>
+                    <p class="text-muted mb-0" style="font-size: 0.8rem; line-height: 1.5;">
+                        Lenders check how much of your current income is already going toward paying off other debts. High ratio increases rejection risk.
+                    </p>
+                </div>
+                
+                <div class="p-3 rounded-3 bg-light border-start border-secondary border-4 shadow-sm" style="background-color: rgba(14, 165, 233, 0.04) !important;">
+                    <div class="fw-bold text-secondary mb-1" style="font-size: 0.95rem; display: flex; align-items: center; gap: 6px;">
+                        <i class="bi bi-info-circle-fill"></i> Data Compliance Notice
+                    </div>
+                    <p class="text-muted mb-0" style="font-size: 0.8rem; line-height: 1.5;">
+                        All input details are evaluated strictly on algorithmic parameters. Verification matches will determine the confidence score.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Full Screen Loading Screen Overlay -->
+<div id="loadingOverlay" class="loading-overlay">
+    <div class="spinner-custom"></div>
+    <div class="position-relative loading-text-container" style="width: 320px;">
+        <span class="loading-text-step">Analyzing Loan Application...</span>
+        <span class="loading-text-step">Evaluating Credit History...</span>
+        <span class="loading-text-step">Running AI Model...</span>
+        <span class="loading-text-step">Generating Prediction...</span>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Smart Lender - AI-Powered Loan Prediction{% endblock %}</title>
+    
+    <!-- Bootstrap 5 CSS (Premium Theme Integration) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/style.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <!-- Bootstrap CSS CDN Fallback/Direct Link -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- Meta Descriptions for SEO -->
+    <meta name="description" content="Predict applicant loan eligibility instantly using classification algorithms like Decision Tree, Random Forest, KNN, and XGBoost.">
+    
+    {% block head %}{% endblock %}
+</head>
+<body>
+
+    <!-- Header & Sticky Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}" id="navLogo">
+                <i class="bi bi-bank2" style="font-size: 1.4rem;"></i>
+                <span>Smart Lender</span>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-2">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}" id="navHome">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('predict') }}" id="navPredict">Loan Prediction</a>
+                    </li>
+                    {% if session.get('prediction_result') %}
+                    <li class="nav-item">
+                        <a class="nav-link text-primary fw-semibold" href="{{ url_for('result') }}" id="navResult" style="background-color: rgba(37, 99, 235, 0.08); border-radius: 8px;">
+                            <i class="bi bi-file-earmark-check-fill text-primary"></i> Latest Result ({{ session.get('prediction_result') }})
+                        </a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('about') }}" id="navAbout">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('contact') }}" id="navContact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row g-4 mb-5">
+                <div class="col-lg-4 col-md-6">
+                    <span class="footer-logo">
+                        <i class="bi bi-bank2"></i> Smart Lender
+                    </span>
+                    <p class="footer-desc">
+                        Empowering banks and financial institutions with real-time AI analytics to assess loan applications, improve processing efficiency, and reduce non-performing assets.
+                    </p>
+                    <div class="social-icons">
+                        <a href="https://github.com" target="_blank" aria-label="GitHub"><i class="bi bi-github"></i></a>
+                        <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                        <a href="https://twitter.com" target="_blank" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 ms-lg-auto">
+                    <h5 class="footer-title">Quick Links</h5>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('index') }}"><i class="bi bi-chevron-right"></i> Home</a></li>
+                        <li><a href="{{ url_for('predict') }}"><i class="bi bi-chevron-right"></i> Loan Prediction</a></li>
+                        <li><a href="{{ url_for('about') }}"><i class="bi bi-chevron-right"></i> About Project</a></li>
+                        <li><a href="{{ url_for('contact') }}"><i class="bi bi-chevron-right"></i> Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="footer-title">Platform Scope</h5>
+                    <p class="footer-desc mb-2">
+                        Designed for cloud deployment and integrated with classification models for high accuracy.
+                    </p>
+                    <div class="d-flex align-items-center gap-2 mt-3" style="color: var(--secondary); font-weight: 600;">
+                        <i class="bi bi-cloud-check-fill" style="font-size: 1.25rem;"></i>
+                        <span>IBM Cloud Ready Architecture</span>
+                    </div>
+                </div>
+            </div>
+            
+            <hr style="border-color: rgba(148, 163, 184, 0.15);">
+            
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0 text-muted" style="font-size: 0.85rem;">
+                        &copy; 2026 Smart Lender AI. All Rights Reserved.
+                    </p>
+                </div>
+                <div class="col-md-6 text-center text-md-end mt-2 mt-md-0">
+                    <p class="mb-0 text-muted" style="font-size: 0.85rem;">
+                        Designed for Premium Banking Operations
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Developer Team - Smart Lender{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    
+    <!-- Title Section -->
+    <div class="text-center mb-5 animate-on-scroll">
+        <span class="badge badge-primary-custom mb-3" style="font-size: 0.85rem; padding: 6px 16px; border-radius: 20px;">
+            Get In Touch
+        </span>
+        <h1 style="font-weight: 800; color: var(--primary);">Contact Support Team</h1>
+        <p class="text-muted mx-auto" style="max-width: 500px;">Have questions about the models or deployment pipeline? Drop us a message.</p>
+    </div>
+    
+    <div class="row g-5">
+        <!-- Contact Form Card -->
+        <div class="col-lg-6 animate-on-scroll">
+            <div class="card-glass">
+                <h3 style="font-weight: 700; color: var(--primary); margin-bottom: 25px;">
+                    <i class="bi bi-envelope-paper-fill text-primary me-2"></i> Send Message
+                </h3>
+                
+                <form id="contactForm" onsubmit="event.preventDefault(); alert('Thank you for contacting Software Savagers! Your message has been sent successfully.'); this.reset();">
+                    <div class="form-group-custom">
+                        <label class="form-label-custom" for="contactName">Full Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control-custom" id="contactName" placeholder="e.g. John Doe" required>
+                    </div>
+                    
+                    <div class="form-group-custom">
+                        <label class="form-label-custom" for="contactEmail">Email Address <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control-custom" id="contactEmail" placeholder="e.g. john@example.com" required>
+                    </div>
+                    
+                    <div class="form-group-custom">
+                        <label class="form-label-custom" for="contactSubject">Subject <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control-custom" id="contactSubject" placeholder="e.g. Model Integration on IBM Cloud" required>
+                    </div>
+                    
+                    <div class="form-group-custom">
+                        <label class="form-label-custom" for="contactMessage">Message <span class="text-danger">*</span></label>
+                        <textarea class="form-control-custom" id="contactMessage" rows="5" placeholder="Write your message here..." required style="resize: none;"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn-grad w-100 py-3 mt-2 justify-content-center">
+                        <i class="bi bi-send-fill"></i> Submit Message
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Info Column -->
+        <div class="col-lg-6 animate-on-scroll" style="animation-delay: 0.1s;">
+            <div class="card-glass d-flex flex-column justify-content-between h-100">
+                <div>
+                    <h3 style="font-weight: 700; color: var(--primary); margin-bottom: 25px;">
+                        <i class="bi bi-info-circle-fill text-primary me-2"></i> Developer Information
+                    </h3>
+                    
+                    <ul class="contact-info-list" style="list-style: none; padding: 0;">
+                        <li class="mb-4 d-flex align-items-start gap-3">
+                            <div class="contact-info-icon" style="width: 40px; height: 40px; border-radius: 50%; background-color: rgba(14, 165, 233, 0.08); color: var(--secondary); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;">
+                                <i class="bi bi-people-fill"></i>
+                            </div>
+                            <div class="contact-info-details">
+                                <h6 class="mb-1 fw-bold text-primary" style="font-size: 0.95rem;">Developer Team</h6>
+                                <p class="text-muted mb-0" style="font-size: 0.88rem;">Software Savagers</p>
+                            </div>
+                        </li>
+                        
+                        <li class="mb-4 d-flex align-items-start gap-3">
+                            <div class="contact-info-icon" style="width: 40px; height: 40px; border-radius: 50%; background-color: rgba(14, 165, 233, 0.08); color: var(--secondary); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;">
+                                <i class="bi bi-envelope-fill"></i>
+                            </div>
+                            <div class="contact-info-details">
+                                <h6 class="mb-1 fw-bold text-primary" style="font-size: 0.95rem;">Email Address</h6>
+                                <p class="text-muted mb-0" style="font-size: 0.88rem;">
+                                    <a href="mailto:useme59902@gmail.com" class="text-decoration-none text-secondary">useme59902@gmail.com</a>
+                                </p>
+                            </div>
+                        </li>
+                        
+                        <li class="mb-4 d-flex align-items-start gap-3">
+                            <div class="contact-info-icon" style="width: 40px; height: 40px; border-radius: 50%; background-color: rgba(14, 165, 233, 0.08); color: var(--secondary); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;">
+                                <i class="bi bi-geo-alt-fill"></i>
+                            </div>
+                            <div class="contact-info-details">
+                                <h6 class="mb-1 fw-bold text-primary" style="font-size: 0.95rem;">Office Location</h6>
+                                <p class="text-muted mb-0" style="font-size: 0.88rem;">Tirupati, Andhra Pradesh, India</p>
+                            </div>
+                        </li>
+                        
+                        <li class="mb-4 d-flex align-items-start gap-3">
+                            <div class="contact-info-icon" style="width: 40px; height: 40px; border-radius: 50%; background-color: rgba(14, 165, 233, 0.08); color: var(--secondary); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;">
+                                <i class="bi bi-globe"></i>
+                            </div>
+                            <div class="contact-info-details">
+                                <h6 class="mb-1 fw-bold text-primary" style="font-size: 0.95rem;">Social Presence</h6>
+                                <div class="d-flex gap-2 mt-1">
+                                    <a href="https://github.com" target="_blank" class="badge badge-primary-custom text-decoration-none px-3 py-2 rounded-pill" style="font-size: 0.75rem;">
+                                        <i class="bi bi-github"></i> GitHub
+                                    </a>
+                                    <a href="https://linkedin.com" target="_blank" class="badge badge-primary-custom text-decoration-none px-3 py-2 rounded-pill" style="font-size: 0.75rem;">
+                                        <i class="bi bi-linkedin"></i> LinkedIn
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Google Maps Embed -->
+                <div class="mt-4">
+                    <h4 style="font-weight: 700; color: var(--primary); font-size: 1.1rem; margin-bottom: 15px;">
+                        <i class="bi bi-map-fill text-primary me-1"></i> Development Office Map
+                    </h4>
+                    <div style="width: 100%; height: 230px; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62057.4471960252!2d79.37803893664797!3d13.62768565158223!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a4f467c69999999%3A0xc3191599e52dfcf9!2sTirupati%2C%20Andhra%20Pradesh!5e0!3m2!1sen!2sin!4v1689000000000!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+{% endblock %}
