@@ -1,27 +1,28 @@
 import os
-import pickle
 import numpy as np
 import pandas as pd
+import xgboost as xgb
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 
 app = Flask(__name__)
 app.secret_key = "smart_lender_secret_key_for_session"
 
-# Load XGBoost model
-MODEL_PATH = "model.pkl"
+# Load XGBoost model from native JSON booster format
+MODEL_PATH = "model.json"
 model = None
 
 def load_model():
     global model
     if os.path.exists(MODEL_PATH):
         try:
-            with open(MODEL_PATH, "rb") as f:
-                model = pickle.load(f)
-            print("Model loaded successfully.")
+            model = xgb.Booster()
+            model.load_model(MODEL_PATH)
+            print("Model loaded successfully from JSON booster.")
         except Exception as e:
             print(f"Error loading model: {e}")
+            model = None
     else:
-        print("WARNING: model.pkl not found! Please run train_model.py first.")
+        print("WARNING: model.json not found! Please run train_model.py first.")
 
 # Load model on startup
 load_model()
@@ -111,57 +112,89 @@ def predict():
             ]
             features_df = pd.DataFrame(features, columns=feature_names)
 
-            # Predict probability
-            prob = model.predict_proba(features_df)[0]
-            prob_rejected = float(prob[0])
-            prob_approved = float(prob[1])
+            # Predict probability using native Booster
+            dmatrix = xgb.DMatrix(features_df)
+            prob = model.predict(dmatrix)
+            prob_approved = float(prob[0])
+            prob_rejected = 1.0 - prob_approved
 
             rejection_reasons = []
             approval_reasons = []
-            if prob_approved >= 0.5:
-                prediction_result = "Approved"
-                confidence = prob_approved * 100
+            compensating_factors = []
+            
+            total_income = applicant_income + coapplicant_income
+            actual_loan = loan_amount * 1000
+            
+            # Key Underwriting Metrics
+            dti_ratio = 0.0
+            if total_income > 0:
+                dti_ratio = (existing_emis / total_income) * 100
                 
-                # Dynamic Approval Reasons Analysis
+            primary_dti = 0.0
+            if applicant_income > 0:
+                primary_dti = (existing_emis / applicant_income) * 100
+                
+            loan_to_income_ratio = 0.0
+            if total_income > 0:
+                # requested loan relative to monthly combined income
+                loan_to_income_ratio = actual_loan / total_income
+                
+            disposable_income = total_income - existing_emis
+            
+            # Evaluate Alternative Resources (Compensating Factors)
+            # Alternative 1: Co-applicant Income Cushion
+            if coapplicant_income > 0 and primary_dti > 40.0 and dti_ratio <= 40.0:
+                compensating_factors.append(f"Co-Applicant Cushion: Primary applicant DTI is {primary_dti:.1f}%, but co-applicant income (₹{coapplicant_income:,.2f}) cushions risk, bringing combined DTI to a safe {dti_ratio:.1f}%.")
+            
+            # Alternative 2: Stellar Credit Score Buffer
+            if credit_score >= 780 and dti_ratio > 40.0 and dti_ratio <= 48.0:
+                compensating_factors.append(f"Stellar Credit Buffer: Excellent credit score of {int(credit_score)} indicates a spotless repayment history, successfully offsetting the elevated DTI of {dti_ratio:.1f}%.")
+                
+            # Alternative 3: Low Loan-to-Income Exposure
+            if dti_ratio > 40.0 and loan_to_income_ratio <= 18.0:
+                compensating_factors.append(f"Low Exposure Multiplier: The requested loan amount (₹{actual_loan:,.2f}) represents only {loan_to_income_ratio:.1f} months of combined income, limiting total default exposure.")
+                
+            # Alternative 4: Ample Net Cash Flow
+            if dti_ratio > 40.0 and disposable_income >= 25000:
+                compensating_factors.append(f"High Net Cash Flow: Even with a DTI of {dti_ratio:.1f}%, the high combined income leaves an ample monthly cash surplus of ₹{disposable_income:,.2f} for living expenses.")
+
+            # Decision Logic with Dynamic Policy Override
+            base_decision = "Approved" if prob_approved >= 0.5 else "Rejected"
+            prediction_result = base_decision
+            confidence = prob_approved * 100 if prob_approved >= 0.5 else prob_rejected * 100
+            
+            # Policy Override: If model rejected but credit score is high (>=750), DTI is within tolerance (<=48%), and we have compensating factor(s)
+            if base_decision == "Rejected" and credit_score >= 750 and dti_ratio <= 48.0 and len(compensating_factors) >= 1:
+                prediction_result = "Approved"
+                confidence = 65.0  # Set reasonable confidence score for override approval
+                approval_reasons.append("Approved via Policy Override: High credit score and strong alternative resources successfully mitigated standard risk parameters.")
+
+            # Generate Reasons
+            if prediction_result == "Approved":
                 if credit_score >= 750:
                     approval_reasons.append(f"Excellent Credit Profile: Your credit score of {int(credit_score)} demonstrates strong financial discipline and a low default risk.")
-                
-                total_income = applicant_income + coapplicant_income
-                actual_loan = loan_amount * 1000
-                
-                # Debt-to-Income Calculation for Approval
-                dti_ratio = 0.0
-                if total_income > 0:
-                    dti_ratio = (existing_emis / total_income) * 100
-                
-                if total_income > 0 and dti_ratio <= 30.0:
+                if dti_ratio <= 30.0:
                     approval_reasons.append(f"Healthy Debt-to-Income (DTI) Ratio: Your monthly debt commitments consume only {dti_ratio:.1f}% of your income, which is well below the standard 40% risk threshold.")
-                
-                if total_income > 0 and actual_loan <= (total_income * 36):
+                if loan_to_income_ratio <= 36.0:
                     approval_reasons.append("Comfortable Loan-to-Income Limit: The requested loan amount is within a conservative multiple of your monthly income, ensuring comfortable repayment capacity.")
                 
+                # Append compensating factors if any
+                for factor in compensating_factors:
+                    approval_reasons.append(f"Compensating Strength - {factor}")
+                    
                 if not approval_reasons:
                     approval_reasons.append("Strong Underwriting Profile: The applicant's aggregate profile features satisfy all risk management eligibility criteria.")
             else:
-                prediction_result = "Rejected"
-                confidence = prob_rejected * 100
-                
-                # Dynamic Rejection Reasons Analysis
                 if credit_score < 750:
                     rejection_reasons.append(f"Low Credit Score: Your score of {int(credit_score)} is below the required 750 threshold. A score of 750 or higher demonstrates strong creditworthiness.")
-                
-                total_income = applicant_income + coapplicant_income
-                actual_loan = loan_amount * 1000
-                
-                # Debt-to-Income Calculation
-                dti_ratio = 0.0
-                if total_income > 0:
-                    dti_ratio = (existing_emis / total_income) * 100
-                
                 if total_income <= 0:
                     rejection_reasons.append("Stable Income Missing: Total monthly income must be greater than zero to justify EMI repayments.")
                 elif dti_ratio > 40.0:
-                    rejection_reasons.append(f"High Debt-to-Income (DTI) Ratio: Your existing debts of ₹{existing_emis:,.2f} take up {dti_ratio:.1f}% of your monthly income. Lenders check this ratio to ensure you aren't over-leveraged (benchmark is under 40%).")
+                    if compensating_factors:
+                        # DTI is high, but not enough compensating factors to override (e.g. score between 750-780, or DTI > 48%)
+                        rejection_reasons.append(f"Elevated DTI with Insufficient Mitigants: Your DTI is {dti_ratio:.1f}%. While some alternatives exist, they do not fully offset the high debt-to-income exposure.")
+                    else:
+                        rejection_reasons.append(f"High Debt-to-Income (DTI) Ratio: Your existing debts of ₹{existing_emis:,.2f} take up {dti_ratio:.1f}% of your monthly income. Lenders check this ratio to ensure you aren't over-leveraged (benchmark is under 40%).")
                 
                 if self_employed_val == 1 and applicant_income < 3000:
                     rejection_reasons.append("High-Risk Employment Profile: Self-employed applicants with monthly incomes under ₹3,000 represent elevated default risk profiles.")

@@ -107,7 +107,8 @@ xgb_train_acc = accuracy_score(y_train, xgb_model.predict(X_train))
 xgb_test_acc = accuracy_score(y_test, xgb_model.predict(X_test))
 print(f"XGBoost - Train Acc: {xgb_train_acc*100:.2f}%, Test Acc: {xgb_test_acc*100:.2f}%")
 
-# Save model
+# Save model both in Pickle and JSON booster format
 with open("model.pkl", "wb") as f:
     pickle.dump(xgb_model, f)
-print("\nSaved XGBoost model to model.pkl successfully!")
+xgb_model.save_model("model.json")
+print("\nSaved XGBoost model to model.pkl and model.json successfully!")
