@@ -1,0 +1,17 @@
+.git
+.gitignore
+.vscode
+.idea
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+venv
+.venv
+env
+ENV
+*.log
+Dockerfile
+manifest.yml
+Procfile
+README.md

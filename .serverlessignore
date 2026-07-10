@@ -1,0 +1,13 @@
+.git/**
+venv/**
+.venv/**
+env/**
+ENV/**
+__pycache__/**
+*.pyc
+*.pyo
+*.pyd
+.vscode/**
+.idea/**
+*.log
+node_modules/**
