@@ -1,31 +1,9 @@
 import os
-import numpy as np
-import pandas as pd
-import xgboost as xgb
+import predict_compiled as pc
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 
 app = Flask(__name__)
 app.secret_key = "smart_lender_secret_key_for_session"
-
-# Load XGBoost model from native JSON booster format
-MODEL_PATH = "model.json"
-model = None
-
-def load_model():
-    global model
-    if os.path.exists(MODEL_PATH):
-        try:
-            model = xgb.Booster()
-            model.load_model(MODEL_PATH)
-            print("Model loaded successfully from JSON booster.")
-        except Exception as e:
-            print(f"Error loading model: {e}")
-            model = None
-    else:
-        print("WARNING: model.json not found! Please run train_model.py first.")
-
-# Load model on startup
-load_model()
 
 # Category mapping
 gender_map = {'male': 1, 'female': 0}
@@ -43,12 +21,6 @@ def index():
 def predict():
     if request.method == 'POST':
         # Check if model is loaded
-        global model
-        if model is None:
-            load_model()
-            if model is None:
-                return jsonify({"status": "error", "message": "Model not loaded. Contact administrator."}), 500
-
         try:
             # Check if input is JSON (from Fetch API) or Form Data
             if request.is_json:
@@ -88,34 +60,23 @@ def predict():
             self_employed_val = self_employed_map.get(self_employed, 0)
             property_area_val = property_area_map.get(property_area, 1)
 
-            # Construct feature array for model prediction
-            # ['gender', 'married', 'dependents', 'education', 'self_employed', 'applicantincome', 'coapplicantincome', 'loanamount', 'loan_amount_term', 'credit_history', 'property_area']
-            features = np.array([[
-                gender_val,
-                married_val,
-                dependents_val,
-                education_val,
-                self_employed_val,
-                applicant_income,
-                coapplicant_income,
-                loan_amount,
-                loan_term,
-                credit_history,
-                property_area_val
-            ]])
+            # Construct feature dictionary for the compiled model prediction
+            features_dict = {
+                'gender': float(gender_val),
+                'married': float(married_val),
+                'dependents': float(dependents_val),
+                'education': float(education_val),
+                'self_employed': float(self_employed_val),
+                'applicantincome': float(applicant_income),
+                'coapplicantincome': float(coapplicant_income),
+                'loanamount': float(loan_amount),
+                'loan_amount_term': float(loan_term),
+                'credit_history': float(credit_history),
+                'property_area': float(property_area_val)
+            }
 
-            # Convert to DataFrame to retain feature names for XGBoost
-            feature_names = [
-                'gender', 'married', 'dependents', 'education', 'self_employed',
-                'applicantincome', 'coapplicantincome', 'loanamount', 'loan_amount_term',
-                'credit_history', 'property_area'
-            ]
-            features_df = pd.DataFrame(features, columns=feature_names)
-
-            # Predict probability using native Booster
-            dmatrix = xgb.DMatrix(features_df)
-            prob = model.predict(dmatrix)
-            prob_approved = float(prob[0])
+            # Predict probability using compiled pure-python model (no numpy, pandas, or xgboost needed)
+            prob_approved = pc.predict_probability(features_dict)
             prob_rejected = 1.0 - prob_approved
 
             rejection_reasons = []
